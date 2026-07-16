@@ -1,0 +1,21 @@
+{
+  "name": "lua-beauty-project",
+  "version": "1.0.0",
+  "description": "Lúa Beauty: Backend, Bot, Catálogo React y Admin Panel",
+  "private": true,
+  "scripts": {
+    "start": "node start.js",
+    "dev": "npx concurrently -n API,ADMIN,CATALOG -c cyan,yellow,green \"npm --prefix backend run start\" \"npm --prefix frontend/admin run dev\" \"npm --prefix frontend/catalog-react run dev\"",
+    "backend": "npm --prefix backend run start",
+    "backend:seed": "npm --prefix backend run seed",
+    "backend:bot": "npm --prefix backend run start:bot",
+    "backend:test": "npm --prefix backend run test:conversacion",
+    "admin": "npm --prefix frontend/admin run dev",
+    "admin:build": "npm --prefix frontend/admin run build",
+    "catalog": "npm --prefix frontend/catalog-react run dev",
+    "catalog:build": "npm --prefix frontend/catalog-react run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

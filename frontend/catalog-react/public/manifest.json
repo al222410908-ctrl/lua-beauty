@@ -1,0 +1,13 @@
+{
+  "name": "Lúa Beauty - Maquillaje Orgánico",
+  "short_name": "Lúa Beauty",
+  "description": "Descubre nuestra colección de maquillaje orgánico y cuidado de la piel. Belleza consciente para ti.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF8",
+  "theme_color": "#A6694B",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/icons.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #F7EFE6;
+  --color-bg-deep: #F0E6D8;
+  --color-bg-light: #FAF6EF;
+  --color-ink: #211C18;
+  --color-ink-soft: #5B5249;
+  --color-nude: #CBA98A;
+  --color-nude-pale: #E9DCCB;
+  --color-terracotta: #A6694B;
+  --color-card: #FFFCF8;
+  --color-line: #E4D5C2;
+
+  --font-display: "Fraunces", serif;
+  --font-sans: "Manrope", system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --color-bg: #1a1816;
+  --color-bg-deep: #252220;
+  --color-bg-light: #2a2622;
+  --color-ink: #faf6ef;
+  --color-ink-soft: #d4d0c8;
+  --color-nude: #c98a6a;
+  --color-nude-pale: #3a3630;
+  --color-terracotta: #c98a6a;
+  --color-card: #2a2622;
+  --color-line: rgba(250,246,239,0.15);
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-shimmer { animation: shimmer 1.5s infinite linear; }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-scale-up { animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-in { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-in-right { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.shimmer-bg {
+  background: linear-gradient(90deg, var(--color-nude-pale) 25%, var(--color-bg-light) 50%, var(--color-nude-pale) 75%);
+  background-size: 200% 100%;
+}
+
+/* Ocultar barra de desplazamiento de forma elegante */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Efecto de elevación de tarjetas premium */
+.premium-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.015);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.premium-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(33, 28, 24, 0.04);
+  border-color: rgba(166, 105, 75, 0.3);
+}
+
+/* Botón de compra premium con efecto de brillo */
+.premium-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  transition: 0.75s;
+  opacity: 0;
+}
+
+.premium-btn:hover::after {
+  left: 125%;
+  opacity: 1;
+}
+
+.premium-btn:active {
+  transform: scale(0.97);
+}

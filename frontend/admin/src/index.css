@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", serif;
+  --font-sans: "Manrope", sans-serif;
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-bg-light: var(--bg-light);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-nude: var(--nude);
+  --color-nude-pale: var(--nude-pale);
+  --color-terracotta: var(--terracotta);
+  --color-accent: var(--accent);
+  --color-accent-gold: var(--accent-gold);
+  --color-active: var(--active);
+  --color-card: var(--card);
+  --color-line: var(--line);
+}
+
+:root {
+  --bg: #F4F5F7;
+  --bg-deep: #EAE5E0;
+  --bg-light: #FDFCFB;
+  --ink: #1C1814;
+  --ink-soft: #7A726A;
+  --nude: #D4B895;
+  --nude-pale: #F3ECE3;
+  --terracotta: #A6694B;
+  --accent: #2C5545;
+  --accent-gold: #D4AF37;
+  --active: #2D3748;
+  --card: #ffffff;
+  --line: #EAE5E0;
+}
+
+[data-theme="dark"] {
+  --bg: #161513;
+  --bg-deep: #201E1B;
+  --bg-light: #24221F;
+  --ink: #FAF8F6;
+  --ink-soft: #A39B92;
+  --nude: #A8866E;
+  --nude-pale: #302C28;
+  --terracotta: #B87A60;
+  --accent: #5A8F7A;
+  --card: #1F1C1A;
+  --line: rgba(250, 248, 246, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Custom Claymorphic classes */
+.clay-card {
+  background-color: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.025), inset 4px 4px 10px rgba(255, 255, 255, 0.7);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.clay-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.04), inset 4px 4px 10px rgba(255, 255, 255, 0.85);
+  border-color: rgba(212, 184, 149, 0.3);
+}
+
+/* Sub-card mini-pills for items */
+.clay-pill {
+  background-color: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.015), inset 2px 2px 6px rgba(255, 255, 255, 0.6);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.clay-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.025), inset 2px 2px 6px rgba(255, 255, 255, 0.8);
+}
+
+/* Active claymorphic navigation button */
+.clay-nav-active {
+  background-color: #2D3748;
+  color: #FFFFFF !important;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 20px rgba(45, 55, 72, 0.18), inset 2px 2px 6px rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode adjustments for claymorphism */
+[data-theme="dark"] .clay-card {
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), inset 2px 2px 6px rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] .clay-card:hover {
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 2px 2px 6px rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .clay-pill {
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 1.5px 1.5px 4px rgba(255, 255, 255, 0.03);
+}
+[data-theme="dark"] .clay-pill:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 1.5px 1.5px 4px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .clay-nav-active {
+  background-color: #C8638A; /* Elegant rose clay button in dark mode */
+  box-shadow: 0 8px 20px rgba(200, 99, 138, 0.25), inset 2px 2px 6px rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar and custom assets */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nude);
+}
+
+/* Animación de entrada suave (Fade-in) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
