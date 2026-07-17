@@ -183,15 +183,37 @@ async function processQueue() {
 
     let cleanPhone = chatId.split('@')[0];
     // Intentar resolver el JID LID a número de teléfono real para registrar órdenes y usuarios
-    if (chatId.endsWith('@lid') && client && typeof client.getContactLidAndPhone === 'function') {
+    if (chatId.endsWith('@lid') && client) {
       try {
-        const details = await client.getContactLidAndPhone([chatId]);
-        if (details && details[chatId]) {
-          cleanPhone = details[chatId].split('@')[0];
-          addLog(`[LID RESOLVED] resolved LID ${chatId.split('@')[0]} to real phone: ${cleanPhone}`);
+        addLog(`[LID DEBUG] Intentando resolver JID: ${chatId}`);
+        
+        // 1. Probar client.getContactLidAndPhone
+        if (typeof client.getContactLidAndPhone === 'function') {
+          const details = await client.getContactLidAndPhone([chatId]);
+          addLog(`[LID DEBUG] getContactLidAndPhone: ${JSON.stringify(details)}`);
+          if (details && details[chatId]) {
+            cleanPhone = details[chatId].split('@')[0];
+            addLog(`[LID DEBUG] Resuelto vía getContactLidAndPhone: ${cleanPhone}`);
+          }
+        }
+        
+        // 2. Probar msg.getContact()
+        if (typeof msg.getContact === 'function') {
+          const contact = await msg.getContact();
+          addLog(`[LID DEBUG] msg.getContact() numero: ${contact?.number}, id: ${JSON.stringify(contact?.id)}`);
+          if (contact && contact.number && !contact.number.startsWith('74844251')) {
+            cleanPhone = contact.number;
+            addLog(`[LID DEBUG] Resuelto vía msg.getContact(): ${cleanPhone}`);
+          }
+        }
+
+        // 3. Probar client.getContactById
+        if (typeof client.getContactById === 'function') {
+          const contact = await client.getContactById(chatId);
+          addLog(`[LID DEBUG] getContactById() numero: ${contact?.number}, id: ${JSON.stringify(contact?.id)}`);
         }
       } catch (errLid) {
-        addLog(`[LID WARNING] failed to resolve ${chatId}: ${errLid.message}`, 'warning');
+        addLog(`[LID DEBUG ERROR] Fallo al resolver LID: ${errLid.stack || errLid.message}`, 'warning');
       }
     }
 
