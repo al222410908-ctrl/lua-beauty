@@ -216,7 +216,7 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
         </div>
 
         {/* Navigation Links (Scrollable middle section) */}
-        <nav className="flex flex-col gap-1 flex-1 overflow-y-auto pr-1">
+        <nav className="flex flex-col gap-1.5 flex-1 overflow-y-auto pr-1">
           {[
             { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
             { id: 'inventario', label: 'Inventario', icon: <Package className="w-4 h-4" /> },
@@ -225,26 +225,35 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
             { id: 'grupos', label: 'Grupos WA', icon: <Users className="w-4 h-4" /> },
             { id: 'comportamiento', label: 'Métricas y Redes', icon: <Sparkles className="w-4 h-4" /> },
             { id: 'configuracion', label: 'Configuración', icon: <Settings className="w-4 h-4" /> }
-          ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => {
-                setActiveTab(t.id);
-                setIsMobileMenuOpen(false);
-                if (t.id === 'pedidos') fetchOrders();
-                if (t.id === 'resumen') fetchStats();
-                if (t.id === 'bot' || t.id === 'grupos') fetchBotStatus();
-              }}
-              className={`w-full py-2.5 px-4 text-xs font-bold tracking-wide flex items-center gap-3 cursor-pointer transition-all duration-300 rounded-[16px] ${
-                activeTab === t.id
-                  ? 'clay-nav-active'
-                  : 'text-ink-soft hover:text-ink hover:bg-black/5 dark:hover:bg-white/5'
-              }`}
-            >
-              {t.icon}
-              <span>{t.label}</span>
-            </button>
-          ))}
+          ].map(t => {
+            const isActive = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                onClick={() => {
+                  setActiveTab(t.id);
+                  setIsMobileMenuOpen(false);
+                  if (t.id === 'pedidos') fetchOrders();
+                  if (t.id === 'resumen') fetchStats();
+                  if (t.id === 'bot' || t.id === 'grupos') fetchBotStatus();
+                }}
+                className={`w-full py-1.5 px-2.5 text-xs font-bold tracking-wide flex items-center gap-3.5 cursor-pointer transition-all duration-300 rounded-xl ${
+                  isActive
+                    ? 'clay-nav-active'
+                    : 'text-ink-soft hover:text-ink hover:bg-black/5 dark:hover:bg-white/5'
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all flex-shrink-0 ${
+                  isActive
+                    ? 'bg-gradient-to-br from-[#A6694B] to-[#C88463] text-white shadow-md shadow-[#A6694B]/20'
+                    : 'bg-bg-deep dark:bg-bg-light text-ink-soft'
+                }`}>
+                  {t.icon}
+                </div>
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
         </nav>
 
         {/* Footer (Fijo abajo) */}

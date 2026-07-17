@@ -6,17 +6,15 @@ const currencyFormatter = new Intl.NumberFormat("es-MX", {
 
 function StatCard({ label, val, color, icon, iconBgClass, extraClass = "" }) {
   return (
-    <div className={`clay-card p-6 relative overflow-hidden flex flex-col justify-between min-h-[125px] select-none ${extraClass}`}>
-      <div className="flex justify-between items-start">
-        <span className={`text-2xl md:text-3xl font-extrabold tracking-tight text-[#1E293B] dark:text-white font-sans ${color}`}>
+    <div className={`clay-card p-4.5 flex items-center justify-between min-h-[90px] select-none ${extraClass}`}>
+      <div className="flex flex-col">
+        <span className="text-[10px] font-bold text-ink-soft uppercase tracking-wider block mb-1">{label}</span>
+        <span className={`text-xl md:text-2xl font-extrabold tracking-tight text-ink font-sans ${color}`}>
           {val}
         </span>
-        <div className={`p-3 rounded-full ${iconBgClass} flex items-center justify-center flex-shrink-0 shadow-sm`}>
-          {icon}
-        </div>
       </div>
-      <div className="mt-4">
-        <span className="text-[10px] font-bold text-ink-soft uppercase tracking-widest block">{label}</span>
+      <div className={`w-11 h-11 rounded-xl ${iconBgClass} flex items-center justify-center flex-shrink-0 shadow-md`}>
+        {icon}
       </div>
     </div>
   );
@@ -27,12 +25,12 @@ function LoadingSkeleton() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="clay-card p-6 min-h-[125px] animate-pulse">
-            <div className="flex justify-between items-start">
-              <div className="h-8 bg-bg-deep rounded w-1/2" />
-              <div className="w-10 h-10 rounded-full bg-bg-deep" />
+          <div key={i} className="clay-card p-4.5 min-h-[90px] animate-pulse flex items-center justify-between">
+            <div className="space-y-2 w-1/2">
+              <div className="h-3 bg-bg-deep rounded w-2/3" />
+              <div className="h-6 bg-bg-deep rounded w-full" />
             </div>
-            <div className="h-3.5 bg-bg-deep rounded w-2/3 mt-4" />
+            <div className="w-11 h-11 rounded-xl bg-bg-deep" />
           </div>
         ))}
       </div>
@@ -64,28 +62,28 @@ export default function TabResumen({ stats, loadingStats, popular, lowStockProdu
         <StatCard
           label="Productos"
           val={stats?.totalProducts || 0}
-          icon={<ShoppingBag className="w-5 h-5 text-[#C8638A]" />}
-          iconBgClass="bg-[rgba(200,99,138,0.08)] border border-[rgba(200,99,138,0.15)]"
+          icon={<ShoppingBag className="w-5 h-5 text-white" />}
+          iconBgClass="bg-gradient-to-br from-pink-400 to-[#C8638A] shadow-pink-500/10"
         />
         <StatCard
           label="Stock Crítico"
           val={lowStock}
           color={lowStock > 0 ? "text-rose-600 font-extrabold" : "text-emerald-600 font-extrabold"}
-          icon={lowStock > 0 ? <AlertTriangle className="w-5 h-5 text-rose-600" /> : <Check className="w-5 h-5 text-emerald-600" />}
-          iconBgClass={lowStock > 0 ? "bg-[rgba(225,29,72,0.08)] border border-[rgba(225,29,72,0.15)]" : "bg-[rgba(16,185,129,0.08)] border border-[rgba(16,185,129,0.15)]"}
-          extraClass={lowStock > 0 ? "bg-[rgba(225,29,72,0.02)] border-rose-200/40" : ""}
+          icon={lowStock > 0 ? <AlertTriangle className="w-5 h-5 text-white" /> : <Check className="w-5 h-5 text-white" />}
+          iconBgClass={lowStock > 0 ? "bg-gradient-to-br from-rose-400 to-rose-600 shadow-rose-500/10" : "bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-emerald-500/10"}
+          extraClass={lowStock > 0 ? "border-rose-200/40" : ""}
         />
         <StatCard
           label="Valor Inventario"
           val={currencyFormatter.format(stats?.totalValue || 0)}
-          icon={<Landmark className="w-5 h-5 text-[#D97706]" />}
-          iconBgClass="bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.15)]"
+          icon={<Landmark className="w-5 h-5 text-white" />}
+          iconBgClass="bg-gradient-to-br from-amber-400 to-amber-600 shadow-amber-500/10"
         />
         <StatCard
           label="Visualizaciones"
           val={stats?.totalViews || 0}
-          icon={<Eye className="w-5 h-5 text-[#0284C7]" />}
-          iconBgClass="bg-[rgba(14,165,233,0.08)] border border-[rgba(14,165,233,0.15)]"
+          icon={<Eye className="w-5 h-5 text-white" />}
+          iconBgClass="bg-gradient-to-br from-sky-400 to-sky-600 shadow-sky-500/10"
         />
       </div>
 

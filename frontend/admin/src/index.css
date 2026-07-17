@@ -21,33 +21,33 @@
 }
 
 :root {
-  --bg: #F4F5F7;
-  --bg-deep: #EAE5E0;
-  --bg-light: #FDFCFB;
-  --ink: #1C1814;
-  --ink-soft: #7A726A;
-  --nude: #D4B895;
+  --bg: #F8F9FA; /* Soft Ant/Muse background */
+  --bg-deep: #EFF1F5;
+  --bg-light: #FFFFFF;
+  --ink: #2D3748; /* Slate text typical of Muse/Ant */
+  --ink-soft: #8C99A8; /* Muted gray text */
+  --nude: #A6694B;
   --nude-pale: #F3ECE3;
   --terracotta: #A6694B;
   --accent: #2C5545;
   --accent-gold: #D4AF37;
   --active: #2D3748;
-  --card: #ffffff;
-  --line: #EAE5E0;
+  --card: #FFFFFF;
+  --line: #E2E8F0; /* Clean Slate borders */
 }
 
 [data-theme="dark"] {
-  --bg: #161513;
-  --bg-deep: #201E1B;
-  --bg-light: #24221F;
-  --ink: #FAF8F6;
-  --ink-soft: #A39B92;
-  --nude: #A8866E;
+  --bg: #141519; /* Ant dark background */
+  --bg-deep: #1C1D21;
+  --bg-light: #24252A;
+  --ink: #E2E8F0;
+  --ink-soft: #718096;
+  --nude: #B87A60;
   --nude-pale: #302C28;
   --terracotta: #B87A60;
   --accent: #5A8F7A;
-  --card: #1F1C1A;
-  --line: rgba(250, 248, 246, 0.08);
+  --card: #1C1D21;
+  --line: #2A2B36;
 }
 
 * {
@@ -64,64 +64,65 @@ body {
   min-height: 100vh;
 }
 
-/* Custom Claymorphic classes */
+/* Redefined custom classes for Ant/Muse premium look */
 .clay-card {
   background-color: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 24px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.025), inset 4px 4px 10px rgba(255, 255, 255, 0.7);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.03); /* Soft wide shadow typical of Muse dashboard */
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .clay-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.04), inset 4px 4px 10px rgba(255, 255, 255, 0.85);
-  border-color: rgba(212, 184, 149, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.05);
+  border-color: var(--nude);
 }
 
 /* Sub-card mini-pills for items */
 .clay-pill {
   background-color: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.015), inset 2px 2px 6px rgba(255, 255, 255, 0.6);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
 }
 .clay-pill:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.025), inset 2px 2px 6px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.04);
 }
 
-/* Active claymorphic navigation button */
+/* Active navigation button (in Muse layout: white card with soft shadow) */
 .clay-nav-active {
-  background-color: #2D3748;
-  color: #FFFFFF !important;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 20px rgba(45, 55, 72, 0.18), inset 2px 2px 6px rgba(255, 255, 255, 0.2);
+  background-color: var(--card);
+  color: var(--ink) !important;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.05);
 }
 
-/* Dark mode adjustments for claymorphism */
+/* Dark mode adjustments for cards and buttons */
 [data-theme="dark"] .clay-card {
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.22), inset 2px 2px 6px rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.25);
 }
 [data-theme="dark"] .clay-card:hover {
-  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 2px 2px 6px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.3);
 }
 
 [data-theme="dark"] .clay-pill {
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 1.5px 1.5px 4px rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 [data-theme="dark"] .clay-pill:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 1.5px 1.5px 4px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="dark"] .clay-nav-active {
-  background-color: #C8638A; /* Elegant rose clay button in dark mode */
-  box-shadow: 0 8px 20px rgba(200, 99, 138, 0.25), inset 2px 2px 6px rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: var(--bg-deep);
+  box-shadow: 0 20px 27px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ink) !important;
 }
 
 /* Scrollbar and custom assets */
