@@ -172,7 +172,7 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
   return (
     <div className="min-h-screen bg-bg font-sans flex flex-col md:flex-row gap-6 animate-fade-in relative">
       {/* Barra superior móvil */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-line sticky top-0 z-50 shadow-sm shadow-black/[0.02]">
+      <div className="md:hidden flex items-center justify-between p-4 bg-card border-b border-line sticky top-0 z-30 shadow-sm shadow-black/[0.02]">
         <div className="flex flex-col">
           <span className="text-lg font-display font-medium text-ink">Lúa Admin</span>
           <span className="text-[9px] text-ink-soft block uppercase tracking-wider font-bold">Consola de Control</span>
@@ -189,21 +189,30 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
       {/* Overlay translúcido para cerrar el menú en móvil */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden transition-all duration-300"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-45 md:hidden transition-all duration-300"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar / Menu */}
       <aside className={`
-        fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-line p-6 flex flex-col justify-between gap-6 transition-transform duration-300 transform
-        md:translate-x-0 md:sticky md:top-0 md:h-screen md:w-64 md:border-r flex-shrink-0 md:overflow-y-auto
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-line p-6 flex flex-col justify-between gap-6 transition-transform duration-300 transform overflow-y-auto
+        md:translate-x-0 md:sticky md:top-0 md:h-screen md:w-64 md:border-r flex-shrink-0
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="space-y-6 flex-grow">
-          <div className="pb-4 border-b border-line/30 hidden md:block">
-            <span className="text-xl font-display font-medium text-ink block select-none">Lúa Admin</span>
-            <span className="text-[10px] text-ink-soft block uppercase tracking-widest mt-1 select-none font-bold">Consola de Control</span>
+          <div className="pb-4 border-b border-line/30 flex items-center justify-between">
+            <div className="flex flex-col">
+              <span className="text-xl font-display font-medium text-ink block select-none">Lúa Admin</span>
+              <span className="text-[10px] text-ink-soft block uppercase tracking-widest mt-1 select-none font-bold">Consola de Control</span>
+            </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="md:hidden p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-ink transition-colors cursor-pointer"
+              title="Cerrar menú"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
           <nav className="flex flex-col gap-1">
             {[
