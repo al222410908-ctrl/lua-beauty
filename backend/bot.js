@@ -181,7 +181,20 @@ async function processQueue() {
 
     addLog(`Procesando mensaje de @${msg.from.split('@')[0]}: "${msg.body}"`);
 
-    const cleanPhone = chatId.split('@')[0];
+    let cleanPhone = chatId.split('@')[0];
+    // Intentar resolver el JID LID a número de teléfono real para registrar órdenes y usuarios
+    if (chatId.endsWith('@lid') && client && typeof client.getContactLidAndPhone === 'function') {
+      try {
+        const details = await client.getContactLidAndPhone([chatId]);
+        if (details && details[chatId]) {
+          cleanPhone = details[chatId].split('@')[0];
+          addLog(`[LID RESOLVED] resolved LID ${chatId.split('@')[0]} to real phone: ${cleanPhone}`);
+        }
+      } catch (errLid) {
+        addLog(`[LID WARNING] failed to resolve ${chatId}: ${errLid.message}`, 'warning');
+      }
+    }
+
     const resultado = await handleMessage(msg.body, estadoActual, api, cleanPhone);
     const { respuesta, nuevoEstado, imagenesToSend, ignorado } = resultado;
     

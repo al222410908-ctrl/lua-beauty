@@ -80,7 +80,17 @@ async function processQueue() {
       return;
     }
 
-    const cleanPhone = chatId.split('@')[0];
+    let cleanPhone = chatId.split('@')[0];
+    // Intentar resolver el JID LID a número de teléfono real para registrar órdenes y usuarios
+    if (chatId.endsWith('@lid') && client && typeof client.getContactLidAndPhone === 'function') {
+      try {
+        const details = await client.getContactLidAndPhone([chatId]);
+        if (details && details[chatId]) {
+          cleanPhone = details[chatId].split('@')[0];
+        }
+      } catch (errLid) {}
+    }
+
     const estadoActual = estados.get(chatId) || { paso: "inicio" };
 
     const { respuesta, nuevoEstado, imagenesToSend } = await handleMessage(msg.body, estadoActual, api, cleanPhone);
