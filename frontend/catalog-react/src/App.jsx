@@ -17,7 +17,7 @@ import OrdersPanel from './components/OrdersPanel';
 import PhoneModal from './components/PhoneModal';
 import WhatsAppConfirmModal from './components/WhatsAppConfirmModal';
 import LoyaltySection from './components/LoyaltySection';
-import NewsletterSection from './components/NewsletterSection';
+
 import WishlistPanel from './components/WishlistPanel';
 
 /* ── Community WhatsApp group link ───────────────────────────────────────── */
@@ -367,7 +367,7 @@ export default function App() {
         onDirectPurchase={handleDirectPurchase}
       />
       <LoyaltySection />
-      <NewsletterSection />
+
 
       {/* Community banner */}
       <CommunityBanner />

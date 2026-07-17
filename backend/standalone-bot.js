@@ -74,6 +74,13 @@ async function processQueue() {
 
   const msg = messageQueue.shift();
   try {
+    // Validar de forma segura que el mensaje provenga de un chat individual antes de cualquier llamada a Puppeteer (evita error 'r: r' en groups/newsletters)
+    if (!msg.from || !msg.from.endsWith('@c.us')) {
+      processing = false;
+      processQueue();
+      return;
+    }
+
     const chat = await msg.getChat();
     if (chat.isGroup) return;
 
@@ -151,7 +158,10 @@ client.on("auth_failure", (msg) => {
 });
 
 client.on("message", (msg) => {
-  enqueueMessage(msg);
+  // Solo procesar mensajes de chats individuales (evitar grupos, listas y canales)
+  if (msg.from && msg.from.endsWith('@c.us')) {
+    enqueueMessage(msg);
+  }
 });
 
 // Guardar estado al salir
