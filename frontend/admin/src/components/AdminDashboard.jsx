@@ -196,57 +196,59 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
 
       {/* Sidebar / Menu */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-line p-6 flex flex-col justify-between gap-6 transition-transform duration-300 transform overflow-y-auto
+        fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-line p-6 flex flex-col gap-6 transition-transform duration-300 transform overflow-hidden h-screen
         md:translate-x-0 md:sticky md:top-0 md:h-screen md:w-64 md:border-r flex-shrink-0
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="space-y-6 flex-grow">
-          <div className="pb-4 border-b border-line/30 flex items-center justify-between">
-            <div className="flex flex-col">
-              <span className="text-xl font-display font-medium text-ink block select-none">Lúa Admin</span>
-              <span className="text-[10px] text-ink-soft block uppercase tracking-widest mt-1 select-none font-bold">Consola de Control</span>
-            </div>
-            <button
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="md:hidden p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-ink transition-colors cursor-pointer"
-              title="Cerrar menú"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        {/* Header (Fijo al tope) */}
+        <div className="pb-4 border-b border-line/30 flex items-center justify-between flex-shrink-0">
+          <div className="flex flex-col">
+            <span className="text-xl font-display font-medium text-ink block select-none">Lúa Admin</span>
+            <span className="text-[10px] text-ink-soft block uppercase tracking-widest mt-1 select-none font-bold">Consola de Control</span>
           </div>
-          <nav className="flex flex-col gap-1">
-            {[
-              { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
-              { id: 'inventario', label: 'Inventario', icon: <Package className="w-4 h-4" /> },
-              { id: 'pedidos', label: 'Pedidos', icon: <ShoppingCart className="w-4 h-4" /> },
-              { id: 'bot', label: 'Bot WhatsApp', icon: <Smartphone className="w-4 h-4" /> },
-              { id: 'grupos', label: 'Grupos WA', icon: <Users className="w-4 h-4" /> },
-              { id: 'comportamiento', label: 'Métricas y Redes', icon: <Sparkles className="w-4 h-4" /> },
-              { id: 'configuracion', label: 'Configuración', icon: <Settings className="w-4 h-4" /> }
-            ].map(t => (
-              <button
-                key={t.id}
-                onClick={() => {
-                  setActiveTab(t.id);
-                  setIsMobileMenuOpen(false);
-                  if (t.id === 'pedidos') fetchOrders();
-                  if (t.id === 'resumen') fetchStats();
-                  if (t.id === 'bot' || t.id === 'grupos') fetchBotStatus();
-                }}
-                className={`w-full py-2.5 px-4 text-xs font-bold tracking-wide flex items-center gap-3 cursor-pointer transition-all duration-300 rounded-[16px] ${
-                  activeTab === t.id
-                    ? 'clay-nav-active'
-                    : 'text-ink-soft hover:text-ink hover:bg-black/5 dark:hover:bg-white/5'
-                }`}
-              >
-                {t.icon}
-                <span>{t.label}</span>
-              </button>
-            ))}
-          </nav>
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="md:hidden p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 text-ink transition-colors cursor-pointer"
+            title="Cerrar menú"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="pt-6 border-t border-line/30 flex flex-col gap-4">
+        {/* Navigation Links (Scrollable middle section) */}
+        <nav className="flex flex-col gap-1 flex-1 overflow-y-auto pr-1">
+          {[
+            { id: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-4 h-4" /> },
+            { id: 'inventario', label: 'Inventario', icon: <Package className="w-4 h-4" /> },
+            { id: 'pedidos', label: 'Pedidos', icon: <ShoppingCart className="w-4 h-4" /> },
+            { id: 'bot', label: 'Bot WhatsApp', icon: <Smartphone className="w-4 h-4" /> },
+            { id: 'grupos', label: 'Grupos WA', icon: <Users className="w-4 h-4" /> },
+            { id: 'comportamiento', label: 'Métricas y Redes', icon: <Sparkles className="w-4 h-4" /> },
+            { id: 'configuracion', label: 'Configuración', icon: <Settings className="w-4 h-4" /> }
+          ].map(t => (
+            <button
+              key={t.id}
+              onClick={() => {
+                setActiveTab(t.id);
+                setIsMobileMenuOpen(false);
+                if (t.id === 'pedidos') fetchOrders();
+                if (t.id === 'resumen') fetchStats();
+                if (t.id === 'bot' || t.id === 'grupos') fetchBotStatus();
+              }}
+              className={`w-full py-2.5 px-4 text-xs font-bold tracking-wide flex items-center gap-3 cursor-pointer transition-all duration-300 rounded-[16px] ${
+                activeTab === t.id
+                  ? 'clay-nav-active'
+                  : 'text-ink-soft hover:text-ink hover:bg-black/5 dark:hover:bg-white/5'
+              }`}
+            >
+              {t.icon}
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Footer (Fijo abajo) */}
+        <div className="pt-6 border-t border-line/30 flex flex-col gap-4 flex-shrink-0">
           <div className="flex items-center justify-between px-2">
             <span className="text-[10px] uppercase font-bold text-ink-soft tracking-wider">Tema</span>
             <button onClick={() => setTheme(prev => prev === 'light' ? 'dark' : 'light')}
@@ -258,10 +260,14 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
             <div className="flex items-center justify-between gap-3 bg-card p-3.5 rounded-xl border border-line/45 shadow-sm shadow-black/[0.01]">
               <div className="flex flex-col text-left">
                 <span className="text-xs font-bold text-ink truncate max-w-[125px]">{currentUser.nombre || currentUser.username}</span>
-                <span className="text-[9px] text-ink-soft opacity-75 font-semibold">Administrador</span>
+                <span className="text-[9px] text-ink-soft uppercase tracking-wider font-bold mt-0.5">{currentUser.role}</span>
               </div>
-              <button onClick={logout} className="p-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-500 cursor-pointer transition-colors" title="Cerrar Sesión">
-                <LogOut className="w-4 h-4" />
+              <button
+                onClick={logout}
+                className="p-2 rounded-lg hover:bg-rose-500/10 text-rose-500 hover:text-rose-600 transition-colors cursor-pointer"
+                title="Cerrar sesión"
+              >
+                <LogOut className="w-4.5 h-4.5" />
               </button>
             </div>
           )}
