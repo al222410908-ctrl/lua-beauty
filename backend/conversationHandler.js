@@ -50,7 +50,7 @@ async function preguntarGemini(textoUsuario) {
       `4. Si te preguntan por cupones de descuento, indícales que pueden escribir la palabra *cupon* seguido del código (ej. "cupon BIENVENIDA") para activarlo en su chat.\n` +
       `5. NO inventes productos ni precios que no estén en la lista.\n`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
     const payload = {
       contents: [
         {
