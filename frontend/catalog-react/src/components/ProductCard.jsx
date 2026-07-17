@@ -70,9 +70,14 @@ export default function ProductCard({ product, isWishlisted, onToggleWishlist, o
 
       {/* Info details */}
       <div className="p-4 flex flex-col flex-1 gap-2 bg-[var(--color-card)]">
-        <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-[var(--color-terracotta)]">
-          {product.categoria}
-        </span>
+        <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider">
+          <span className="text-[var(--color-terracotta)] tracking-[0.2em]">
+            {product.categoria}
+          </span>
+          <span className={`${product.stock > 0 ? 'text-[var(--color-ink-soft)]' : 'text-rose-600'} font-sans normal-case`}>
+            {product.stock > 0 ? `${product.stock} en stock` : 'Agotado'}
+          </span>
+        </div>
         <h3 
           className="font-[Fraunces] text-sm font-semibold text-[var(--color-ink)] leading-snug cursor-pointer hover:text-[var(--color-terracotta)] transition-colors line-clamp-1"
           onClick={() => onSelect(product)}
