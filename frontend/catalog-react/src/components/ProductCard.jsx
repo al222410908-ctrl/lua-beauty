@@ -96,13 +96,33 @@ export default function ProductCard({ product, isWishlisted, onToggleWishlist, o
             </button>
           </div>
 
-          {/* Pedir por WhatsApp Premium Action CTA */}
-          <button
-            onClick={(e) => { e.stopPropagation(); onDirectPurchase(product); }}
-            className="premium-btn w-full h-11 md:h-10 rounded-xl bg-[#211C18] text-white dark:bg-[#FAF6EF] dark:text-[#211C18] hover:bg-[#A6694B] dark:hover:bg-[#A6694B] dark:hover:text-white flex items-center justify-center gap-1.5 text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm"
-          >
-            <span>📱 Apartar por WhatsApp</span>
-          </button>
+          {/* Action Buttons */}
+          <div className="flex flex-col gap-2">
+            {/* Agregar al Carrito */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hasVariants) {
+                  onSelect(product);
+                } else {
+                  addToCart(product);
+                  showToast(`${product.nombre} agregado al carrito 🛒`, 'success');
+                }
+              }}
+              className="w-full h-10 rounded-xl bg-[var(--color-terracotta)] text-white hover:opacity-95 flex items-center justify-center gap-1.5 text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
+            >
+              <ShoppingCart className="w-3.5 h-3.5 text-white" />
+              <span>Agregar al Carrito</span>
+            </button>
+
+            {/* Pedir por WhatsApp Premium Action CTA */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onDirectPurchase(product); }}
+              className="w-full h-10 rounded-xl bg-[#211C18] text-white dark:bg-[#FAF6EF] dark:text-[#211C18] hover:bg-[#A6694B] dark:hover:bg-[#A6694B] dark:hover:text-white flex items-center justify-center gap-1.5 text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
+            >
+              <span>📱 Apartar por WhatsApp</span>
+            </button>
+          </div>
         </div>
       </div>
     </article>
