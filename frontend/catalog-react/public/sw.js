@@ -1,4 +1,4 @@
-const CACHE = 'lua-beauty-v4';
+const CACHE = 'lua-beauty-v5';
 const PRECACHE_URLS = ['/', '/manifest.json', '/favicon.svg', '/icons.svg'];
 
 self.addEventListener('install', e => {
@@ -12,8 +12,8 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  if (e.request.url.includes('/api/') || e.request.url.includes('picsum')) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  if (e.request.url.includes('/api/') || e.request.url.includes('/admin/') || e.request.url.includes('picsum')) {
+    e.respondWith(fetch(e.request));
     return;
   }
 
