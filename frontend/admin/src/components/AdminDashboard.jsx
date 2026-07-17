@@ -197,7 +197,7 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
       {/* Sidebar / Menu */}
       <aside className={`
         fixed inset-y-0 left-0 z-40 w-64 bg-card border-r border-line p-6 flex flex-col justify-between gap-6 transition-transform duration-300 transform
-        md:translate-x-0 md:static md:w-64 md:border-r md:min-h-screen flex-shrink-0
+        md:translate-x-0 md:sticky md:top-0 md:h-screen md:w-64 md:border-r flex-shrink-0 md:overflow-y-auto
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="space-y-6 flex-grow">
