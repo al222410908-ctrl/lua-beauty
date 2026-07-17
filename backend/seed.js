@@ -111,11 +111,10 @@ for (const [productId, variants] of Object.entries(variantsData)) {
 // Delivery zones
 db.prepare('DELETE FROM delivery_zones').run();
 const zones = [
-  { nombre: 'Centro', descripcion: 'Zona céntrica de la ciudad', sort_order: 0 },
-  { nombre: 'Norte', descripcion: 'Zona norte', sort_order: 1 },
-  { nombre: 'Sur', descripcion: 'Zona sur', sort_order: 2 },
-  { nombre: 'Oriente', descripcion: 'Zona oriente', sort_order: 3 },
-  { nombre: 'Poniente', descripcion: 'Zona poniente', sort_order: 4 },
+  { nombre: '🏫 Kinder de Rinconada', descripcion: 'Entrega en el Kinder de Rinconada', sort_order: 0 },
+  { nombre: '🏪 Kiosco de Villa', descripcion: 'Entrega en el Kiosco de Villa', sort_order: 1 },
+  { nombre: '🏪 Kiosco de Xona', descripcion: 'Entrega en el Kiosco de Xona', sort_order: 2 },
+  { nombre: '📍 Zolotepec', descripcion: 'Entrega en Zolotepec', sort_order: 3 },
 ];
 const insertZone = db.prepare('INSERT INTO delivery_zones (nombre, descripcion, sort_order) VALUES (?, ?, ?)');
 for (const z of zones) {

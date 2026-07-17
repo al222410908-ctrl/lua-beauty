@@ -159,11 +159,11 @@ export default function CartPanel({ onClose }) {
                 <select
                   value={selectedZone}
                   onChange={e => setSelectedZone(e.target.value)}
-                  className="w-full mt-1 px-3 py-2 rounded border border-[var(--color-line)] bg-transparent text-xs focus:outline-none focus:border-[var(--color-terracotta)]"
+                  className="w-full mt-1 px-3 py-2 rounded border border-[var(--color-line)] bg-[var(--color-card)] text-[var(--color-ink)] text-xs focus:outline-none focus:border-[var(--color-terracotta)] cursor-pointer"
                 >
-                  <option value="">Selecciona tu zona</option>
+                  <option value="" className="bg-[var(--color-card)] text-[var(--color-ink)]">Selecciona tu zona</option>
                   {deliveryZones.map(z => (
-                    <option key={z.id} value={z.nombre}>{z.nombre}</option>
+                    <option key={z.id} value={z.nombre} className="bg-[var(--color-card)] text-[var(--color-ink)]">{z.nombre}</option>
                   ))}
                 </select>
                 <p className="text-[9px] text-[var(--color-ink-soft)] mt-1">Envío sin costo dentro de estas zonas</p>
