@@ -341,6 +341,8 @@ export default function App() {
       )}
 
       <Layout
+        products={products}
+        onSelectProduct={setSelectedProduct}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onCartClick={() => setShowCart(true)}

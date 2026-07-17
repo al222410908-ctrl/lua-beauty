@@ -74,10 +74,26 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Archivos Estáticos del Panel Admin (/admin)
-app.use('/admin', express.static(path.join(__dirname, '../frontend/admin/dist')));
+app.use('/admin', express.static(path.join(__dirname, '../frontend/admin/dist'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 // Archivos Estáticos del Catálogo React (Raíz)
-app.use(express.static(path.join(__dirname, '../frontend/catalog-react/dist')));
+app.use(express.static(path.join(__dirname, '../frontend/catalog-react/dist'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 const { requireAuth, requireAdmin } = require('./middleware/auth');
 
@@ -435,11 +451,17 @@ app.get('/api/behavior/conversion', requireAuth, requireAdmin, (req, res) => {
 
 // SPA fallback para el Panel Admin (cualquier ruta que comience con /admin)
 app.use('/admin', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
   res.sendFile(path.join(__dirname, '../frontend/admin/dist', 'index.html'));
 });
 
 // SPA fallback para el catálogo React (cualquier otra ruta no capturada por la API)
 app.use((req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
   res.sendFile(path.join(__dirname, '../frontend/catalog-react/dist', 'index.html'));
 });
 
