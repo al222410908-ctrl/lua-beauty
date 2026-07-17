@@ -151,6 +151,29 @@ app.get('/api/coupons', requireAuth, requireAdmin, (req, res) => {
   res.json(coupons);
 });
 
+app.post('/api/coupons', requireAuth, requireAdmin, (req, res) => {
+  const { code, discount, type, description } = req.body;
+  if (!code || discount === undefined) return res.status(400).json({ error: 'Código y descuento son requeridos' });
+  const cleanCode = code.toUpperCase().trim();
+  try {
+    db.prepare('INSERT OR REPLACE INTO coupons (code, discount, type, description, active) VALUES (?, ?, ?, ?, 1)')
+      .run(cleanCode, parseFloat(discount), type || 'percentage', description || '');
+    res.status(201).json({ success: true, code: cleanCode });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/coupons/:code', requireAuth, requireAdmin, (req, res) => {
+  const code = req.params.code.toUpperCase();
+  try {
+    db.prepare('UPDATE coupons SET active = 0 WHERE code = ?').run(code);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/coupons/validate', (req, res) => {
   const { code, phone } = req.body;
   if (!code) return res.status(400).json({ error: 'Código requerido' });

@@ -9,6 +9,69 @@
  */
 
 const db = require('./db');
+const axios = require('axios');
+
+async function preguntarGemini(textoUsuario) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) return null;
+
+  try {
+    // 1. Obtener productos activos de la DB
+    const productos = db.prepare('SELECT nombre, descripcion, precio, stock, categoria FROM products WHERE active = 1').all();
+    const listadoProductos = productos.map(p => 
+      `- ${p.nombre} (${p.categoria}): $${p.precio} MXN. Stock: ${p.stock}. Descripción: ${p.descripcion || 'Sin descripción'}`
+    ).join('\n');
+
+    // 2. Zonas de entrega
+    const zonas = db.prepare('SELECT nombre FROM delivery_zones WHERE active = 1').all();
+    const listadoZonas = zonas.map(z => z.nombre).join(', ');
+
+    // 3. Settings bancarios y generales
+    const settings = db.prepare('SELECT bank_name, bank_clabe, bank_account, bank_holder, welcome_message, address FROM settings LIMIT 1').get() || {};
+
+    const systemInstruction = 
+      `Eres la asistente de chat inteligente de la tienda "Lúa Beauty" (Maquillaje Orgánico & Cuidado de Piel).\n` +
+      `Responde a las clientas con amabilidad, emojis hermosos (✨, 💖, 🌸, 💄, 🌿), y con respuestas breves y directas (ideales para WhatsApp).\n\n` +
+      `INFORMACIÓN EN TIEMPO REAL DE NUESTRA TIENDA:\n` +
+      `- Inventario de Productos en Stock:\n${listadoProductos}\n\n` +
+      `- Zonas de entrega gratuita (sin costo de envío): ${listadoZonas || '🏫 Kinder de Rinconada, 🏪 Kiosco de Villa, 🏪 Kiosco de Xona, 📍 Zolotepec'}.\n` +
+      `- Métodos de pago aceptados: Pago en efectivo al recibir tu pedido, o Transferencia Bancaria.\n` +
+      `- Información para Transferencias Bancarias:\n` +
+      `  Banco: ${settings.bank_name || 'N/A'}\n` +
+      `  CLABE: ${settings.bank_clabe || 'N/A'}\n` +
+      `  Cuenta: ${settings.bank_account || 'N/A'}\n` +
+      `  Titular: ${settings.bank_holder || 'N/A'}\n` +
+      `- WhatsApp de Contacto Humano (Rocío): +52 5620788791\n` +
+      `- Dirección de tienda física (si aplica): ${settings.address || 'N/A'}.\n\n` +
+      `REGLAS DEL CHATBOT:\n` +
+      `1. Mantén tus respuestas en un tono muy cercano, profesional y conciso (máximo 2 párrafos cortos).\n` +
+      `2. Responde las preguntas de stock y precios basándote estrictamente en el Inventario provisto arriba. Si no encuentras un producto o su stock es 0, di amablemente que no está disponible por el momento.\n` +
+      `3. Si te preguntan cómo comprar, explica que pueden visitar nuestro Catálogo Virtual en https://luabeauty.duckdns.org/ y hacer su pedido desde el carrito, o bien escribir la palabra *menu* aquí mismo en el chat para usar nuestro sistema automatizado de compras por WhatsApp.\n` +
+      `4. Si te preguntan por cupones de descuento, indícales que pueden escribir la palabra *cupon* seguido del código (ej. "cupon BIENVENIDA") para activarlo en su chat.\n` +
+      `5. NO inventes productos ni precios que no estén en la lista.\n`;
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const payload = {
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: `${systemInstruction}\n\nPregunta de la clienta: "${textoUsuario}"\n\nRespuesta corta de Lúa Beauty:` }]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.35,
+        maxOutputTokens: 300
+      }
+    };
+
+    const res = await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' } });
+    const reply = res.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    return reply ? reply.trim() : null;
+  } catch (err) {
+    console.error("⚠️ Error llamando a la API de Gemini:", err.response?.data || err.message);
+    return null;
+  }
+}
 
 /**
  * Carga las categorías dinámicamente desde la base de datos.
@@ -167,6 +230,16 @@ async function handleMessage(texto, estado, api, phone = null) {
   // Si el mensaje no coincide con ningún patrón esperado, el bot lo ignora
   // por completo para no intervenir en conversaciones personales.
   if (!esMensajeRelevante(texto, estadoActual)) {
+    if ((estadoActual.paso === 'inicio' || estadoActual.paso === 'menu') && process.env.GEMINI_API_KEY) {
+      try {
+        const respuestaGemini = await preguntarGemini(texto);
+        if (respuestaGemini) {
+          return { respuesta: respuestaGemini, nuevoEstado: { paso: 'menu' } };
+        }
+      } catch (errGemini) {
+        console.error("⚠️ Falló la llamada a Gemini:", errGemini.message);
+      }
+    }
     return { ignorado: true, respuesta: '', nuevoEstado: estadoActual };
   }
   // ────────────────────────────────────────────────────────────────────────
