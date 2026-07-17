@@ -149,6 +149,106 @@ export default function TabPedidos({ orders = [], loadingOrders = false, token, 
     showToast('Archivo CSV exportado correctamente 📊', 'success');
   };
 
+  const printOrderTicket = (order) => {
+    if (!order) return;
+    const printWindow = window.open('', '_blank');
+    const itemsHtml = (order.items || []).map(it => `
+      <tr style="border-bottom: 1px solid #eee;">
+        <td style="padding: 8px 0; font-size: 13px;">${it.nombre}${it.variantName ? ` <small style="display:block;color:#777;font-size:10px;">VARIANTE: ${it.variantName}</small>` : ''}</td>
+        <td style="padding: 8px 0; text-align: right; font-size: 13px;">${it.quantity} x $${it.precio}</td>
+        <td style="padding: 8px 0; text-align: right; font-size: 13px; font-weight: bold;">$${(it.precio || 0) * it.quantity}</td>
+      </tr>
+    `).join('');
+
+    const html = `
+      <html>
+        <head>
+          <title>Recibo - Lúa Beauty - ${order.id}</title>
+          <style>
+            body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; padding: 20px; line-height: 1.4; }
+            .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #A6694B; padding-bottom: 10px; }
+            .header h1 { margin: 0 0 5px 0; font-size: 24px; color: #A6694B; font-style: italic; }
+            .header p { margin: 0; font-size: 12px; color: #777; }
+            .info-section { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 12px; }
+            .info-block h3 { margin: 0 0 5px 0; font-size: 13px; text-transform: uppercase; color: #555; }
+            .info-block p { margin: 3px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            th { border-bottom: 2px solid #eee; padding: 8px 0; text-align: left; font-size: 12px; text-transform: uppercase; color: #666; }
+            .total-section { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px; text-align: right; font-size: 13px; }
+            .total-section .line { margin: 5px 0; }
+            .total-section .grand-total { font-size: 16px; font-weight: bold; color: #A6694B; margin-top: 10px; }
+            .footer { text-align: center; margin-top: 40px; font-size: 11px; color: #999; border-top: 1px dashed #ccc; padding-top: 15px; }
+            @media print {
+              body { padding: 0; }
+              .no-print { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Lúa Beauty</h1>
+            <p>Maquillaje Orgánico & Cuidado de Piel</p>
+            <p><strong>Recibo de Pedido: ${order.id}</strong></p>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-block">
+              <h3>Cliente</h3>
+              <p><strong>Nombre:</strong> ${order.user_nombre || 'Cliente Anónimo'}</p>
+              <p><strong>Teléfono:</strong> +${order.user_telefono || 'N/A'}</p>
+              <p><strong>Fecha:</strong> ${new Date(order.created_at || order.date).toLocaleString('es-MX')}</p>
+            </div>
+            <div class="info-block" style="text-align: right;">
+              <h3>Detalles de Entrega</h3>
+              <p><strong>Zona:</strong> ${order.delivery_zone || 'Centro'}</p>
+              <p><strong>Método de Pago:</strong> ${PAYMENT_METHOD_LABELS[order.payment_method] || order.payment_method || 'N/A'}</p>
+              <p><strong>Estado del Pedido:</strong> ${STATUS_CONFIG[order.status]?.label || order.status}</p>
+            </div>
+          </div>
+
+          ${order.user_direccion ? `
+          <div style="margin-bottom: 20px; font-size: 12px; background: #f9f9f9; padding: 10px; border-radius: 5px; border-left: 3px solid #A6694B;">
+            <strong style="display:block;margin-bottom:3px;font-size:11px;text-transform:uppercase;color:#555;">Dirección de Entrega:</strong>
+            ${order.user_direccion}
+          </div>
+          ` : ''}
+
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 55%;">Producto</th>
+                <th style="width: 25%; text-align: right;">Cantidad</th>
+                <th style="width: 20%; text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+
+          <div class="total-section">
+            <div class="line"><span>Subtotal:</span> <strong>$${order.subtotal || order.total || 0}</strong></div>
+            ${order.discount > 0 ? `<div class="line" style="color: #10B981;"><span>Descuento ${order.coupon ? `(${order.coupon})` : ''}:</span> <strong>-$${order.discount}</strong></div>` : ''}
+            <div class="line grand-total"><span>Total a Liquidar:</span> <span>$${order.total || 0}</span></div>
+          </div>
+
+          <div class="footer">
+            <p>¡Gracias por tu compra en Lúa Beauty! ✨</p>
+            <p>Fórmula natural, belleza consciente.</p>
+          </div>
+
+          <script>
+            window.onload = function() {
+              window.print();
+            };
+          </script>
+        </body>
+      </html>
+    `;
+    printWindow.document.write(html);
+    printWindow.document.close();
+  };
+
   return (
     <div className="space-y-6 animate-fade-in select-none">
       {/* Tarjetas de Estadísticas */}
@@ -469,6 +569,16 @@ export default function TabPedidos({ orders = [], loadingOrders = false, token, 
                         </div>
                       </div>
                     )}
+
+                    <div className="border-t border-line/20 pt-4 flex justify-end select-none">
+                      <button
+                        onClick={() => printOrderTicket(order)}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg cursor-pointer flex items-center gap-1.5 transition-colors"
+                      >
+                        <FileSpreadsheet className="w-4 h-4" />
+                        <span>Imprimir Recibo (PDF)</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

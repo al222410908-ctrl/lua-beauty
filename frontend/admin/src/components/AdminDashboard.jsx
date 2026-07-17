@@ -99,6 +99,11 @@ export default function AdminDashboard({ token, products, loadProducts, showToas
           const message = JSON.parse(event.data);
           if (message.type === 'new_order') {
             showToast(`¡Nuevo pedido recibido! ${message.data.id} (${currencyFormatter.format(message.data.total)}) 🛍️`, 'info');
+            try {
+              const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-200.wav');
+              audio.volume = 0.5;
+              audio.play().catch(() => {});
+            } catch (_) {}
             fetchStats();
             fetchOrders();
             fetchBehavior();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Save, Plus, Trash2, Landmark, DollarSign, MapPin, Building2, CreditCard } from 'lucide-react';
+import { Save, Plus, Trash2, Landmark, DollarSign, MapPin, Building2, CreditCard, Sparkles } from 'lucide-react';
 
 export default function ShopSettings({ token, showToast }) {
   const [savingPayment, setSavingPayment] = useState(false);
@@ -14,9 +14,18 @@ export default function ShopSettings({ token, showToast }) {
   const [bankAccount, setBankAccount] = useState('');
   const [bankHolder, setBankHolder] = useState('');
 
+  // Coupons settings
+  const [coupons, setCoupons] = useState([]);
+  const [newCouponCode, setNewCouponCode] = useState('');
+  const [newCouponDiscount, setNewCouponDiscount] = useState('');
+  const [newCouponType, setNewCouponType] = useState('percentage');
+  const [newCouponDescription, setNewCouponDescription] = useState('');
+  const [savingCoupons, setSavingCoupons] = useState(false);
+
   useEffect(() => {
     fetchSettings();
     fetchZones();
+    fetchCoupons();
   }, []);
 
   const fetchSettings = async () => {
@@ -114,6 +123,70 @@ export default function ShopSettings({ token, showToast }) {
       } else showToast('Error al eliminar zona', 'error');
     } catch {
       showToast('Error al eliminar zona', 'error');
+    }
+  };
+
+  const fetchCoupons = async () => {
+    try {
+      const res = await fetch('/api/coupons', { headers: { Authorization: `Bearer ${token}` } });
+      const data = await res.json();
+      setCoupons(data || []);
+    } catch (err) {
+      console.error('Error fetching coupons:', err);
+    }
+  };
+
+  const addCoupon = async (e) => {
+    e.preventDefault();
+    if (!newCouponCode.trim() || !newCouponDiscount) return;
+    setSavingCoupons(true);
+    try {
+      let discountVal = parseFloat(newCouponDiscount);
+      if (newCouponType === 'percentage' && discountVal > 1) {
+        discountVal = discountVal / 100;
+      }
+      const res = await fetch('/api/coupons', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          code: newCouponCode.trim().toUpperCase(),
+          discount: discountVal,
+          type: newCouponType,
+          description: newCouponDescription.trim()
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast('Cupón creado con éxito ✨', 'success');
+        setNewCouponCode('');
+        setNewCouponDiscount('');
+        setNewCouponDescription('');
+        fetchCoupons();
+      } else {
+        showToast(data.error || 'Error al agregar cupón', 'error');
+      }
+    } catch {
+      showToast('Error al agregar cupón', 'error');
+    } finally {
+      setSavingCoupons(false);
+    }
+  };
+
+  const deleteCoupon = async (code) => {
+    try {
+      const res = await fetch(`/api/coupons/${code}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showToast('Cupón desactivado correctamente', 'success');
+        fetchCoupons();
+      } else {
+        showToast(data.error || 'Error al desactivar cupón', 'error');
+      }
+    } catch {
+      showToast('Error al desactivar cupón', 'error');
     }
   };
 
@@ -268,6 +341,107 @@ export default function ShopSettings({ token, showToast }) {
                 </button>
               </div>
             ))
+          )}
+        </div>
+      </section>
+
+      {/* Coupons Administration */}
+      <section className="bg-card border border-line/30 rounded-xl p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Sparkles className="w-5 h-5 text-terracotta" />
+          <h2 className="text-lg font-display font-medium">Cupones de Descuento</h2>
+        </div>
+
+        <p className="text-xs text-ink-soft mb-4">Genera cupones para aplicar descuentos en el catálogo de clientes. El código se autoconvierte a mayúsculas.</p>
+
+        <form onSubmit={addCoupon} className="space-y-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+            <div>
+              <label className="text-[10px] font-semibold text-ink-soft uppercase tracking-wider block mb-1">Código del Cupón</label>
+              <input
+                type="text"
+                required
+                value={newCouponCode}
+                onChange={e => setNewCouponCode(e.target.value)}
+                className="w-full px-3 py-2 rounded border border-line bg-transparent text-sm focus:outline-none focus:border-terracotta text-ink"
+                placeholder="Ej. BIENVENIDA"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-semibold text-ink-soft uppercase tracking-wider block mb-1">Tipo de Descuento</label>
+              <select
+                value={newCouponType}
+                onChange={e => setNewCouponType(e.target.value)}
+                className="w-full px-3 py-2 rounded border border-line bg-[var(--color-card)] text-[var(--color-ink)] text-sm focus:outline-none focus:border-terracotta cursor-pointer"
+              >
+                <option value="percentage">Porcentaje (%)</option>
+                <option value="fixed">Monto Fijo ($)</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-[10px] font-semibold text-ink-soft uppercase tracking-wider block mb-1">Valor del Descuento</label>
+              <input
+                type="number"
+                required
+                step="any"
+                value={newCouponDiscount}
+                onChange={e => setNewCouponDiscount(e.target.value)}
+                className="w-full px-3 py-2 rounded border border-line bg-transparent text-sm focus:outline-none focus:border-terracotta text-ink"
+                placeholder={newCouponType === 'percentage' ? 'Ej. 10 para 10%' : 'Ej. 50 para $50'}
+              />
+            </div>
+          </div>
+
+          <div className="text-left">
+            <label className="text-[10px] font-semibold text-ink-soft uppercase tracking-wider block mb-1">Descripción Corta</label>
+            <input
+              type="text"
+              value={newCouponDescription}
+              onChange={e => setNewCouponDescription(e.target.value)}
+              className="w-full px-3 py-2 rounded border border-line bg-transparent text-sm focus:outline-none focus:border-terracotta text-ink"
+              placeholder="Ej. 10% de descuento en toda tu compra"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={savingCoupons || !newCouponCode.trim() || !newCouponDiscount}
+            className="px-4 py-2.5 rounded bg-terracotta text-white text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-terracotta/90 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" />
+            {savingCoupons ? 'Creando...' : 'Crear Cupón'}
+          </button>
+        </form>
+
+        <div className="space-y-2.5 border-t border-line/30 pt-6">
+          <h3 className="text-xs font-bold text-ink-soft uppercase tracking-wider mb-3 text-left">Cupones Activos</h3>
+          {coupons.length === 0 ? (
+            <p className="text-xs text-ink-soft italic text-left">No hay cupones activos actualmente</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {coupons.map(c => (
+                <div key={c.code} className="flex items-center justify-between p-3.5 rounded-xl border border-line/30 bg-bg-light/30">
+                  <div className="space-y-1 text-left">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-ink bg-line/40 px-2 py-0.5 rounded">
+                        {c.code}
+                      </span>
+                      <span className="text-xs font-extrabold text-emerald-600">
+                        {c.type === 'percentage' ? `${Math.round(c.discount * 100)}% Off` : `$${c.discount} Off`}
+                      </span>
+                    </div>
+                    {c.description && <p className="text-[10px] text-ink-soft">{c.description}</p>}
+                  </div>
+                  <button
+                    onClick={() => deleteCoupon(c.code)}
+                    className="p-2 rounded hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-500 cursor-pointer transition-colors"
+                    title="Desactivar cupón"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </section>
