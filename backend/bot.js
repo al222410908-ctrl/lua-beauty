@@ -211,7 +211,7 @@ async function processQueue() {
       }
     }
   } catch (err) {
-    addLog(`Error procesando mensaje de @${msg.from.split('@')[0]}: ${err.message}`, 'error');
+    addLog(`Error procesando mensaje de @${msg.from.split('@')[0]}: ${err.stack || err.message || err}`, 'error');
     try {
       await msg.reply("Tuvimos un problema inesperado. Intenta de nuevo en un momento 🙏");
     } catch (_) {}
