@@ -22,7 +22,7 @@ export default function ProductGrid({ products, loading, wishlist, onToggleWishl
   if (loading) {
     return (
       <section className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
           {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
         </div>
       </section>
@@ -39,7 +39,7 @@ export default function ProductGrid({ products, loading, wishlist, onToggleWishl
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
         {products.map(p => (
           <ProductCard
             key={p.id}

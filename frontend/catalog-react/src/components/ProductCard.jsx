@@ -69,8 +69,8 @@ export default function ProductCard({ product, isWishlisted, onToggleWishlist, o
       </div>
 
       {/* Info details */}
-      <div className="p-4 flex flex-col flex-1 gap-2 bg-[var(--color-card)]">
-        <div className="flex justify-between items-center text-[9px] font-bold uppercase tracking-wider">
+      <div className="p-3 sm:p-4 flex flex-col flex-1 gap-1.5 sm:gap-2 bg-[var(--color-card)]">
+        <div className="flex justify-between items-center text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">
           <span className="text-[var(--color-terracotta)] tracking-[0.2em]">
             {product.categoria}
           </span>
@@ -79,30 +79,30 @@ export default function ProductCard({ product, isWishlisted, onToggleWishlist, o
           </span>
         </div>
         <h3 
-          className="font-[Fraunces] text-sm font-semibold text-[var(--color-ink)] leading-snug cursor-pointer hover:text-[var(--color-terracotta)] transition-colors line-clamp-1"
+          className="font-[Fraunces] text-xs sm:text-sm font-semibold text-[var(--color-ink)] leading-snug cursor-pointer hover:text-[var(--color-terracotta)] transition-colors line-clamp-1"
           onClick={() => onSelect(product)}
         >
           {product.nombre}
         </h3>
         {product.descripcion && (
-          <p className="text-[10.5px] text-[var(--color-ink-soft)] line-clamp-2 leading-relaxed min-h-[32px]">
+          <p className="text-[10.5px] text-[var(--color-ink-soft)] line-clamp-2 leading-relaxed min-h-[32px] hidden sm:block">
             {product.descripcion}
           </p>
         )}
 
-        <div className="mt-auto pt-2.5 flex flex-col gap-2.5">
+        <div className="mt-auto pt-2 flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="font-extrabold text-sm text-[var(--color-ink)]">{formatPrice(product.precio)}</span>
+            <span className="font-extrabold text-xs sm:text-sm text-[var(--color-ink)]">{formatPrice(product.precio)}</span>
             <button
               onClick={(e) => { e.stopPropagation(); onSelect(product); }}
-              className="text-[9px] font-bold uppercase tracking-widest text-[var(--color-ink-soft)] hover:text-[var(--color-terracotta)] transition-colors flex items-center gap-1 cursor-pointer"
+              className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-[var(--color-ink-soft)] hover:text-[var(--color-terracotta)] transition-colors flex items-center gap-1 cursor-pointer"
             >
               Detalles
             </button>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5 mt-1">
             {/* Agregar al Carrito */}
             <button
               onClick={(e) => {
@@ -114,18 +114,18 @@ export default function ProductCard({ product, isWishlisted, onToggleWishlist, o
                   showToast(`${product.nombre} agregado al carrito 🛒`, 'success');
                 }
               }}
-              className="w-full h-10 rounded-xl bg-[var(--color-terracotta)] text-white hover:opacity-95 flex items-center justify-center gap-1.5 text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
+              className="w-full h-8 sm:h-10 rounded-lg sm:rounded-xl bg-[var(--color-terracotta)] text-white hover:opacity-95 flex items-center justify-center gap-1 text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
             >
-              <ShoppingCart className="w-3.5 h-3.5 text-white" />
-              <span>Agregar al Carrito</span>
+              <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" />
+              <span>Agregar<span className="hidden sm:inline"> al Carrito</span></span>
             </button>
 
             {/* Pedir por WhatsApp Premium Action CTA */}
             <button
               onClick={(e) => { e.stopPropagation(); onDirectPurchase(product); }}
-              className="w-full h-10 rounded-xl bg-[#211C18] text-white dark:bg-[#FAF6EF] dark:text-[#211C18] hover:bg-[#A6694B] dark:hover:bg-[#A6694B] dark:hover:text-white flex items-center justify-center gap-1.5 text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
+              className="w-full h-8 sm:h-10 rounded-lg sm:rounded-xl bg-[#211C18] text-white dark:bg-[#FAF6EF] dark:text-[#211C18] hover:bg-[#A6694B] dark:hover:bg-[#A6694B] dark:hover:text-white flex items-center justify-center gap-1 text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-widest cursor-pointer shadow-sm transition-all duration-300 active:scale-95"
             >
-              <span>📱 Apartar por WhatsApp</span>
+              <span>📱 Apartar<span className="hidden sm:inline"> por WhatsApp</span></span>
             </button>
           </div>
         </div>
