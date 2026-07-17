@@ -80,8 +80,6 @@ async function processQueue() {
       return;
     }
 
-    const chat = await msg.getChat();
-    if (chat.isGroup) return;
     const cleanPhone = chatId.split('@')[0];
     const estadoActual = estados.get(chatId) || { paso: "inicio" };
 

@@ -167,9 +167,6 @@ async function processQueue() {
       return;
     }
 
-    const chat = await msg.getChat();
-    if (chat.isGroup) return;
-
     logChatMessage(chatId, 'cliente', msg.body);
 
     const estadoActual = cargarEstadoDesdeDB(chatId);
