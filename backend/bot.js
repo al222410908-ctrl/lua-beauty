@@ -185,35 +185,37 @@ async function processQueue() {
     // Intentar resolver el JID LID a número de teléfono real para registrar órdenes y usuarios
     if (chatId.endsWith('@lid') && client) {
       try {
-        addLog(`[LID DEBUG] Intentando resolver JID: ${chatId}`);
-        
-        // 1. Probar client.getContactLidAndPhone
+        // 1. Intentar resolver usando getContactLidAndPhone (retorna un array)
         if (typeof client.getContactLidAndPhone === 'function') {
           const details = await client.getContactLidAndPhone([chatId]);
-          addLog(`[LID DEBUG] getContactLidAndPhone: ${JSON.stringify(details)}`);
-          if (details && details[chatId]) {
-            cleanPhone = details[chatId].split('@')[0];
-            addLog(`[LID DEBUG] Resuelto vía getContactLidAndPhone: ${cleanPhone}`);
-          }
-        }
-        
-        // 2. Probar msg.getContact()
-        if (typeof msg.getContact === 'function') {
-          const contact = await msg.getContact();
-          addLog(`[LID DEBUG] msg.getContact() numero: ${contact?.number}, id: ${JSON.stringify(contact?.id)}`);
-          if (contact && contact.number && !contact.number.startsWith('74844251')) {
-            cleanPhone = contact.number;
-            addLog(`[LID DEBUG] Resuelto vía msg.getContact(): ${cleanPhone}`);
+          if (Array.isArray(details)) {
+            const found = details.find(item => item.lid === chatId);
+            if (found && found.pn) {
+              cleanPhone = found.pn.split('@')[0];
+              addLog(`[LID RESOLVED] Resuelto vía getContactLidAndPhone: ${cleanPhone}`);
+            }
           }
         }
 
-        // 3. Probar client.getContactById
-        if (typeof client.getContactById === 'function') {
+        // 2. Si no se pudo resolver, intentar con el user id del contacto del mensaje
+        if ((!cleanPhone || cleanPhone.startsWith('74844251')) && typeof msg.getContact === 'function') {
+          const contact = await msg.getContact();
+          if (contact && contact.id && contact.id.user && !contact.id.user.startsWith('74844251')) {
+            cleanPhone = contact.id.user;
+            addLog(`[LID RESOLVED] Resuelto vía msg.getContact(): ${cleanPhone}`);
+          }
+        }
+
+        // 3. Fallback adicional con getContactById
+        if ((!cleanPhone || cleanPhone.startsWith('74844251')) && typeof client.getContactById === 'function') {
           const contact = await client.getContactById(chatId);
-          addLog(`[LID DEBUG] getContactById() numero: ${contact?.number}, id: ${JSON.stringify(contact?.id)}`);
+          if (contact && contact.id && contact.id.user && !contact.id.user.startsWith('74844251')) {
+            cleanPhone = contact.id.user;
+            addLog(`[LID RESOLVED] Resuelto vía getContactById(): ${cleanPhone}`);
+          }
         }
       } catch (errLid) {
-        addLog(`[LID DEBUG ERROR] Fallo al resolver LID: ${errLid.stack || errLid.message}`, 'warning');
+        addLog(`Error al resolver LID para ${chatId}: ${errLid.message}`, 'warning');
       }
     }
 
