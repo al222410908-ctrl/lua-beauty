@@ -75,7 +75,8 @@ async function processQueue() {
   const msg = messageQueue.shift();
   try {
     const chatId = msg.from;
-    if (!chatId || !chatId.endsWith('@c.us')) {
+    // Ignorar grupos y difusiones inmediatamente sin llamar a getChat() (permitir @c.us y @lid)
+    if (!chatId || chatId.endsWith('@g.us') || chatId.endsWith('@broadcast')) {
       return;
     }
 
